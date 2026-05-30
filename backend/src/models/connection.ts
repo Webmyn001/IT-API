@@ -1,11 +1,19 @@
 import mongoose from 'mongoose';
 import logger from '../utils/logger';
 
+let cachedClient: typeof mongoose | null = null;
+
 export async function connectDB(): Promise<void> {
+  if (cachedClient) return;
+  if (mongoose.connection.readyState >= 1) {
+    cachedClient = mongoose;
+    return;
+  }
+
   const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/internship_api';
 
   try {
-    await mongoose.connect(uri);
+    cachedClient = await mongoose.connect(uri);
     logger.info('MongoDB connected');
   } catch (error: any) {
     logger.error('MongoDB connection error', { message: error.message });
@@ -17,6 +25,7 @@ export async function connectDB(): Promise<void> {
   });
 
   mongoose.connection.on('disconnected', () => {
+    cachedClient = null;
     logger.warn('MongoDB disconnected');
   });
 }

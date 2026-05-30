@@ -86,13 +86,21 @@ export async function getCompanies(req: AuthenticatedRequest, res: Response, nex
 
 export async function getCompany(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const isAdmin = req.user?.role === 'ADMIN' || req.user?.role === 'SUPER_ADMIN';
 
-    const company = await Company.findOne({
-      $or: [{ _id: id }, { slug: id }],
+    // Try to look up by slug first, fall back to _id if id looks like an ObjectId
+    let company = await Company.findOne({
+      slug: id,
       ...(isAdmin ? {} : { status: 'APPROVED' }),
     });
+
+    if (!company && /^[a-f\d]{24}$/i.test(id)) {
+      company = await Company.findOne({
+        _id: id,
+        ...(isAdmin ? {} : { status: 'APPROVED' }),
+      });
+    }
 
     if (!company) {
       throw new AppError(404, 'Company not found');

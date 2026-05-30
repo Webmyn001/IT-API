@@ -8,6 +8,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { errorHandler, notFoundHandler } from './api/middleware/errorHandler';
+import { connectDB } from './models/connection';
 import logger from './utils/logger';
 
 import authRoutes from './api/routes/auth';
@@ -16,12 +17,21 @@ import adminRoutes from './api/routes/admin';
 import searchRoutes from './api/routes/search';
 
 const app = express();
+
+// Connect to MongoDB (safe to call multiple times — uses cached connection)
+connectDB().catch((err) =>
+  logger.error('MongoDB connection failed', { error: err.message })
+);
 const API_PREFIX = process.env.API_PREFIX || '/api/v1';
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(compression());
+const allowedOrigins = (process.env.CORS_ORIGIN || 'https://internapi-oqxo.onrender.com,http://localhost:5173,http://localhost:4173').split(',');
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || '*',
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.some((o) => origin.startsWith(o.trim()))) return cb(null, true);
+    cb(null, origin);
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
