@@ -221,9 +221,10 @@ export class AICollector {
 
       const snippets = await page.evaluate(() => {
         const items: string[] = [];
+        // @ts-ignore - document is browser global in page.evaluate
         const results = document.querySelectorAll('div[data-sokoban-container], div.g');
-        results.forEach((el) => {
-          const text = (el as HTMLElement).innerText || '';
+        results.forEach((el: any) => {
+          const text = el.textContent || '';
           if (text.length > 30) items.push(text.slice(0, 800));
         });
         return items.slice(0, 5);

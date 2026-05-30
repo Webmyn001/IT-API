@@ -26,7 +26,7 @@ export async function login(req: AuthenticatedRequest, res: Response, next: Next
     const token = jwt.sign(
       { userId: user._id.toString(), role: user.role },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions
     );
 
     await AuditLog.create({

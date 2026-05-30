@@ -7,7 +7,7 @@ export interface ICollectionLog extends Document {
   companiesAdded: number;
   companiesUpdated: number;
   duplicatesFound: number;
-  errors: number;
+  errorCount: number;
   startedAt: Date;
   completedAt?: Date;
   duration?: number;
@@ -26,7 +26,7 @@ const collectionLogSchema = new Schema<ICollectionLog>(
     companiesAdded: { type: Number, default: 0 },
     companiesUpdated: { type: Number, default: 0 },
     duplicatesFound: { type: Number, default: 0 },
-    errors: { type: Number, default: 0 },
+    errorCount: { type: Number, default: 0 },
     startedAt: { type: Date, default: Date.now },
     completedAt: { type: Date },
     duration: { type: Number },

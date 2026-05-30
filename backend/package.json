@@ -8,7 +8,7 @@
 "build": "tsc",
 "start": "node dist/server.js",
     "seed": "tsx src/db/seed.ts",
-    "postinstall": "node -e \"if(!process.env.VERCEL)npx playwright install chromium\" 2>/dev/null || true",
+    "postinstall": "node scripts/postinstall.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src --ext .ts",

@@ -118,14 +118,15 @@ export default function Layout() {
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`}
         target="_blank"
         rel="noopener noreferrer"
+        className="whatsapp-btn"
         style={{
           position: 'fixed', bottom: '2.5rem', right: '1.5rem', zIndex: 100,
           display: 'flex', alignItems: 'center', gap: '0.5rem',
           background: '#22c55e', color: 'white', border: 'none',
-          borderRadius: '9999px', padding: '0.75rem 1rem',
+          borderRadius: '9999px',
           boxShadow: '0 4px 20px rgba(34,197,94,0.35)',
           cursor: 'pointer', textDecoration: 'none',
-          fontSize: '0.8125rem', fontWeight: 600,
+          fontWeight: 600,
           transition: 'box-shadow 0.2s, transform 0.2s',
           transform: waHover ? 'scale(1.05)' : 'scale(1)',
         }}
